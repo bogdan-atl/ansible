@@ -1,0 +1,23 @@
+- hosts: all
+  become: true
+
+  tasks:
+    - name: Install postfix
+      apt:
+        pkg:
+          - postfix
+        state: latest
+        update_cache: true
+      tags: init postfix
+
+    - name: Stop service  postfix
+      ansible.builtin.service:
+        name: postfix
+        state: stopped
+      tags: drop postfix  
+
+    - name: Remove postfix package
+      ansible.builtin.apt:
+        name: postfix
+        state: absent
+      tags: drop postfix
