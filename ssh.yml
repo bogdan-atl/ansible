@@ -5,7 +5,7 @@
   gather_facts: false
   vars:
 
-    username: bogdan
+    username: user1
     userpass: skillfactory
   tasks:
     - name: Create User
@@ -22,4 +22,4 @@
       ansible.posix.authorized_key:
         user: "{{ username }}"
         state: present
-        key: "{{ lookup('file', '/home/admin/.ssh/ansible.pub') }}"
+        key: "{{ lookup('file', '/home/admin/.ssh/id_rsa.pub') }}"
