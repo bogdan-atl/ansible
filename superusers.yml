@@ -1,0 +1,44 @@
+---
+- hosts: all
+  become: true
+
+
+  tasks:
+    - name: Ensure group "superusers"
+      ansible.builtin.group:
+        name: superusers
+        state: present
+
+    - name: Add the user 'user2' with a bash shell
+      ansible.builtin.user:
+        name: user2
+        shell: /bin/bash
+        groups: superusers
+        append: yes            
+
+    - name: Add the user 'user3' with a bash shell
+      ansible.builtin.user:
+        name: user3
+        shell: /bin/bash
+        groups: superusers
+        append: yes
+
+    - name: Validate the sudoers  superusers
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/90-cloud-init-users
+        state: present
+        line: '%superusers ALL=(ALL:ALL) NOPASSWD: ALL'
+        validate: /usr/sbin/visudo -cf %s
+
+
+    - name: Deploy SSH Public Key for user2 
+      ansible.posix.authorized_key:
+        user: user2
+        state: present
+        key: "{{ lookup('file', '/home/admin/.ssh/id_rsa.pub') }}"
+
+    - name: Deploy SSH Public Key for user3
+      ansible.posix.authorized_key:
+        user: user3
+        state: present
+        key: "{{ lookup('file', '/home/admin/.ssh/id_rsa.pub') }}"
