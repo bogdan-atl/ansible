@@ -1,0 +1,23 @@
+---
+# tasks file for nginx_php-fpm
+- name: Install nginx, php8.1-fpm
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: ['nginx','php8.1-fpm']
+
+- name: Remove config
+  ansible.builtin.file:
+    path: /etc/nginx/sites-available/default
+    state: absent
+
+- name: Install new configuration file
+  template:
+    src: default.j2
+    dest: /etc/nginx/sites-available/default
+
+- name: Install php configuration file
+  template:
+    src: info.php.j2
+    dest: /var/www/html/info.php
+
+
+
