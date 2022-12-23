@@ -1,0 +1,28 @@
+---
+# tasks file for dnsmasq
+- name: install dnsmasq
+  ansible.builtin.package:
+    name: dnsmasq
+    state: latest
+
+- name: disable services systemd-resolved
+  service:
+    name: systemd-resolved
+    enabled: no
+    state: stopped
+
+- name: write config to  /etc/dnsmasq.conf
+  ansible.builtin.template:
+    src: "dnsmasq.conf.j2"
+    dest: "/etc/dnsmasq.conf"
+
+- name: write config to /etc/hosts
+  ansible.builtin.template:
+    src: "host.j2"
+    dest: "/etc/hosts"
+
+- name: restart services dnsmasq
+  ansible.builtin.service:
+    name: dnsmasq
+    state: restarted
+
