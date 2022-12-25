@@ -1,0 +1,16 @@
+---
+# tasks file for php
+- name: Install php8.1-fpm
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: ['php8.1-fpm']
+
+- name: Remove old config
+  ansible.builtin.file:
+    path: /etc/php/8.1/fpm/pool.d/www.conf
+    state: absent
+
+- name: Install php configuration file (open 9000 port)
+  ansible.builtin.copy:
+    src: /etc/ansible/roles/php/templates/www.conf
+    dest: /etc/php/8.1/fpm/pool.d/www.conf
+  notify: restart php8.1-fpm  

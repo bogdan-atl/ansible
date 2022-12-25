@@ -1,0 +1,17 @@
+---
+# tasks file for http
+- name: Install nginx
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: ['nginx']
+
+- name: Remove config
+  ansible.builtin.file:
+    path: /etc/nginx/sites-available/default
+    state: absent
+
+- name: Install new configuration file (forward 9000 port)
+  template:
+    src: default.j2
+    dest: /etc/nginx/sites-available/default
+  notify: restart nginx
+
