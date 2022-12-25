@@ -9,6 +9,7 @@
     update_password: on_create
     groups: "sudo"
     append: yes
+    
 - name: Deploy SSH Public Key
   ansible.posix.authorized_key:
     user: "{{ username }}"
